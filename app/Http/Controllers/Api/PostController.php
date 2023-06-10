@@ -83,6 +83,7 @@ class PostController extends Controller
     {
         //define validation rules
         $validator = Validator::make($request->all(), [
+            'image'     => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'title'     => 'required',
             'content'   => 'required',
         ]);
@@ -120,5 +121,23 @@ class PostController extends Controller
 
         //return response
         return new PostResource(true, 'Data Post Berhasil Diubah!', $post);
+    }
+    
+    /**
+     * destroy
+     *
+     * @param  mixed $post
+     * @return void
+     */
+    public function destroy(Post $post)
+    {
+        //delete image
+        Storage::delete('public/posts/'.$post->image);
+
+        //delete post
+        $post->delete();
+
+        //return response
+        return new PostResource(true, 'Data Post Berhasil Dihapus!', null);
     }
 }
